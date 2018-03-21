@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_tvDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+
+        android:layout_weight="50"
+        android:textColor="@color/cast_expanded_controller_background_color" />
+
+    <TextView
+        android:id="@+id/tvRiseTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="50"
+
+
+        android:textColor="@color/cast_expanded_controller_background_color" />
+</LinearLayout>

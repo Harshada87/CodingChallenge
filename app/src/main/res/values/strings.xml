@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ISS Position</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="permission_denied_explanation">Permission Denied</string>
+    <string name="settings">Setting</string>
+    <string name="permission_rationale">Permission Rational</string>
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="last_update_time_label">Last location update time</string>
+</resources>
