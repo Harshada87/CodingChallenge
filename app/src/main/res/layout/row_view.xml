@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_tvDuration"
+    <ImageButton
+        android:id="@+id/imSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="13dp"
+        android:layout_weight="50"
+        app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        android:layout_weight="50"
-        android:textColor="@color/cast_expanded_controller_background_color" />
+        <TextView
+            android:id="@+id/tv_tvDuration"
+            android:layout_width="301dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="50"
+            android:textColor="@color/cast_expanded_controller_background_color" />
 
-    <TextView
-        android:id="@+id/tvRiseTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="50"
+        <TextView
+            android:id="@+id/tvRiseTime"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:textColor="@color/cast_expanded_controller_background_color" />
 
+    </LinearLayout>
 
-        android:textColor="@color/cast_expanded_controller_background_color" />
-</LinearLayout>
+</RelativeLayout>

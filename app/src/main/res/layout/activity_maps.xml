@@ -21,46 +21,52 @@
 
             android:layout_weight="50"></fragment>
 
-        <RelativeLayout
-            android:id="@+id/detail"
-            android:layout_width="249dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:background="@drawable/cast_expanded_controller_actionbar_bg_gradient_light"
-            android:orientation="horizontal">
+            android:layout_gravity="bottom|right">
 
-            <TextView
-                android:id="@+id/txinfo"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/detail"
+                android:layout_width="249dp"
                 android:layout_height="wrap_content"
-                android:text="Current ISS Pass Detail"
-                android:textColor="@android:color/background_light" />
-            <TextView
-                android:id="@+id/txtTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"
-                android:textColor="@android:color/background_light"
-                android:layout_below="@+id/txinfo"/>
+                android:layout_gravity="bottom|right"
+                android:background="@drawable/cast_expanded_controller_actionbar_bg_gradient_light"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtLat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtTime"
-                android:text="Lat"
-                android:textColor="@android:color/background_light" />
+                <TextView
+                    android:id="@+id/txinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Current ISS Pass Detail"
+                    android:textColor="@android:color/background_light" />
 
-            <TextView
-                android:id="@+id/txtLong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtLat"
-                android:text="Long"
-                android:textColor="@android:color/background_light" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/txtTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txinfo"
+                    android:text="Time"
+                    android:textColor="@android:color/background_light" />
+
+                <TextView
+                    android:id="@+id/txtLat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtTime"
+                    android:text="Lat"
+                    android:textColor="@android:color/background_light" />
+
+                <TextView
+                    android:id="@+id/txtLong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtLat"
+                    android:text="Long"
+                    android:textColor="@android:color/background_light" />
+            </RelativeLayout>
+        </FrameLayout>
     </FrameLayout>
-
     <LinearLayout
         android:id="@+id/llFooter"
         android:layout_width="match_parent"

@@ -133,7 +133,7 @@ public class ISSPassActivity extends AppCompatActivity {
     private String mLastUpdateTimeLabel;
     private Boolean mRequestingLocationUpdates;
     private String mLastUpdateTime;
-    ArrayList<HashMap<String, String>> passDataList;
+    private ArrayList<HashMap<String, String>> passDataList;
     int Dur, rTime;
     private ListView lv;
     boolean updateUI = true;
@@ -148,8 +148,9 @@ public class ISSPassActivity extends AppCompatActivity {
         updateValuesFromBundle(savedInstanceState);
         startLocationUpdates();
         updateLocationUI();
-createLocationRequest();
+        createLocationRequest();
     }
+
     private void init() {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -158,18 +159,18 @@ createLocationRequest();
         passDataList = new ArrayList<>();
 
         lv = findViewById(R.id.list_view);
-      LinearLayout  llfooter = (LinearLayout)findViewById(R.id.llFooter);
-       Button btMyPosition = (Button)llfooter.findViewById(R.id.btMyLocation);
-       btMyPosition.setVisibility(View.GONE);
-       Button ISSPass = (Button)llfooter.findViewById(R.id.btCurrentPass);
-       ISSPass.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent iss = new Intent(ISSPassActivity.this, SplashActivity.class);
-               startActivity(iss);
-           }
-       });
-           // Set labels.
+        LinearLayout llfooter = (LinearLayout) findViewById(R.id.llFooter);
+        Button btMyPosition = (Button) llfooter.findViewById(R.id.btMyLocation);
+        btMyPosition.setVisibility(View.GONE);
+        Button ISSPass = (Button) llfooter.findViewById(R.id.btCurrentPass);
+        ISSPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iss = new Intent(ISSPassActivity.this, SplashActivity.class);
+                startActivity(iss);
+            }
+        });
+        // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
@@ -198,7 +199,7 @@ createLocationRequest();
                         KEY_REQUESTING_LOCATION_UPDATES);
             }
 
-             if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
+            if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
                 // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
                 // is not null.
                 mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -212,7 +213,7 @@ createLocationRequest();
         }
     }
 
-        private void createLocationRequest() {
+    private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
 
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
@@ -237,6 +238,7 @@ createLocationRequest();
             }
         };
     }
+
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
@@ -266,7 +268,7 @@ createLocationRequest();
     public void startUpdatesButtonHandler(View view) {
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
-           // setButtonsEnabledState();
+            // setButtonsEnabledState();
             startLocationUpdates();
         }
     }
@@ -275,7 +277,7 @@ createLocationRequest();
      * Handles the Stop Updates button, and requests removal of location updates.
      */
     public void stopUpdatesButtonHandler(View view) {
-           stopLocationUpdates();
+        stopLocationUpdates();
     }
 
     private void startLocationUpdates() {
@@ -331,13 +333,12 @@ createLocationRequest();
      * Updates all UI fields.
      */
     private void updateUI() {
-       // setButtonsEnabledState();
+        // setButtonsEnabledState();
         updateLocationUI();
     }
 
-      private void updateLocationUI() {
-        if (mCurrentLocation != null && !updateUI)
-        {
+    private void updateLocationUI() {
+        if (mCurrentLocation != null && !updateUI) {
             mLatitudeTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mLatitudeLabel,
                     mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mLongitudeLabel,
@@ -354,12 +355,13 @@ createLocationRequest();
 
             fetchData(lat, Lon);
             updateUI = true;
-            Log.e("%%", lat+""+Lon);
+            Log.e("%%", lat + "" + Lon);
         } else {
 
         }
 
     }
+
     // API call
     private void fetchData(final String mLatitudeLabel, final String mLongitudeLabel) {
         String tag_string_req = "ISS";
@@ -394,33 +396,24 @@ createLocationRequest();
                                     JSONObject p = passArray.getJSONObject(i);
                                     Dur = p.getInt("duration");
                                     rTime = p.getInt("risetime");
-
-
                                     String durationTime = "Duration Time is :" + String.valueOf(Dur);
                                     String riseTime = String.valueOf(rTime);
-
-
                                     HashMap<String, String> map = new HashMap<>();
                                     map.put("DT", durationTime);
                                     map.put("RT", riseTime);
                                     passDataList.add(map);
-
-
                                 }
                                 passDataList.notifyAll();
                             } catch (Exception e) {
                                 Log.e("Ex", e.toString());
                             }
-
                         }
-
                         ListAdapter adapter = new SimpleAdapter(
                                 ISSPassActivity.this, passDataList,
                                 R.layout.row_view, new String[]{"DT", "RT"/*"risetime"*/}, new int[]{R.id.tv_tvDuration,
                                 R.id.tvRiseTime});
                         lv.setAdapter(adapter);
                     }
-
                     // Error in login. Get the error message
                     String errorMsg = jObj.getString("message");
 
@@ -448,10 +441,8 @@ createLocationRequest();
                 params.put("tag", "cordinate");
                 params.put("lat", mLatitudeLabel);
                 params.put("lon", mLongitudeLabel);
-
                 return params;
             }
-
         };
 
         // Adding request to request queue
@@ -467,8 +458,6 @@ createLocationRequest();
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
-
-
     /**
      * Removes location updates from the FusedLocationApi.
      */
@@ -506,6 +495,7 @@ createLocationRequest();
 
         stopLocationUpdates();
     }
+
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
@@ -513,7 +503,7 @@ createLocationRequest();
         super.onSaveInstanceState(savedInstanceState);
     }
 
-      private boolean checkPermissions() {
+    private boolean checkPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
@@ -524,7 +514,7 @@ createLocationRequest();
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION);
 
-           if (shouldProvideRationale) {
+        if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
 
         } else {
@@ -542,7 +532,7 @@ createLocationRequest();
         Log.i(TAG, "onRequestPermissionResult");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
-                 Log.i(TAG, "User interaction was cancelled.");
+                Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (mRequestingLocationUpdates) {
                     Log.i(TAG, "Permission granted, updates requested, starting location updates");

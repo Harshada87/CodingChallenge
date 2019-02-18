@@ -3,6 +3,9 @@ package harshada.iss.com.demo.UI;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -12,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -20,12 +24,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -45,17 +52,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+
 import harshada.iss.com.demo.BuildConfig;
 import harshada.iss.com.demo.R;
 import harshada.iss.com.demo.Controller.Appcontroller;
@@ -94,6 +105,7 @@ public class LocationDataActivity extends AppCompatActivity {
     int Dur, rTime;
     private ListView lv;
     boolean updateUI = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +120,7 @@ public class LocationDataActivity extends AppCompatActivity {
         pDialog = new ProgressDialog(this);
         // rv = (RecyclerView)findViewById(R.id.recycle_view);
         passDataList = new ArrayList<>();
-              lv = (ListView) findViewById(R.id.list_view);
+        lv = (ListView) findViewById(R.id.list_view);
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
@@ -116,6 +128,7 @@ public class LocationDataActivity extends AppCompatActivity {
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mTotalPassestv = (TextView) findViewById(R.id.totalPasses);
+
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
@@ -128,6 +141,7 @@ public class LocationDataActivity extends AppCompatActivity {
         createLocationRequest();
         buildLocationSettingsRequest();
     }
+
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
 
@@ -135,7 +149,7 @@ public class LocationDataActivity extends AppCompatActivity {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(
                         KEY_REQUESTING_LOCATION_UPDATES);
             }
- if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
+            if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
                 mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             }
             if (savedInstanceState.keySet().contains(KEY_LAST_UPDATED_TIME_STRING)) {
@@ -144,12 +158,14 @@ public class LocationDataActivity extends AppCompatActivity {
             updateUI();
         }
     }
+
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
     private void createLocationCallback() {
         mLocationCallback = new LocationCallback() {
             @Override
@@ -161,11 +177,13 @@ public class LocationDataActivity extends AppCompatActivity {
             }
         };
     }
+
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -185,6 +203,7 @@ public class LocationDataActivity extends AppCompatActivity {
                 break;
         }
     }
+
     public void startUpdatesButtonHandler(View view) {
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
@@ -192,9 +211,11 @@ public class LocationDataActivity extends AppCompatActivity {
             startLocationUpdates();
         }
     }
+
     public void stopUpdatesButtonHandler(View view) {
         stopLocationUpdates();
     }
+
     private void startLocationUpdates() {
         // Begin by checking if the device has the necessary location settings.
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
@@ -202,7 +223,7 @@ public class LocationDataActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         Log.i(TAG, "All location settings are satisfied.");
-                      //noinspection MissingPermission
+                        //noinspection MissingPermission
                         if (ActivityCompat.checkSelfPermission(LocationDataActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationDataActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
@@ -237,10 +258,12 @@ public class LocationDataActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void updateUI() {
         setButtonsEnabledState();
         updateLocationUI();
     }
+
     private void setButtonsEnabledState() {
         if (mRequestingLocationUpdates) {
             mStartUpdatesButton.setEnabled(false);
@@ -251,6 +274,7 @@ public class LocationDataActivity extends AppCompatActivity {
             mStopUpdatesButton.setEnabled(false);
         }
     }
+
     private void updateLocationUI() {
         if (mCurrentLocation != null && !updateUI) {
             mLatitudeTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mLatitudeLabel,
@@ -270,7 +294,9 @@ public class LocationDataActivity extends AppCompatActivity {
             fetchData(lat, Lon);
             updateUI = true;
         } else {
-        } }
+        }
+    }
+
     // API call
     private void fetchData(final String mLatitudeLabel, final String mLongitudeLabel) {
         String tag_string_req = "ISS";
@@ -295,7 +321,7 @@ public class LocationDataActivity extends AppCompatActivity {
                         String Pass = String.valueOf(ob.optInt("passes"));
                         String lat = String.valueOf(ob.opt("latitute"));
                         String longi = String.valueOf(ob.opt("longitude"));
-                     //   mTotalPassestv.setText(Pass);
+                        //   mTotalPassestv.setText(Pass);
                         JSONArray jsonArray = jObj.getJSONArray("response");
                         String passData = jsonArray.toString();
                         Log.e("JArray", jsonArray.toString());
@@ -314,27 +340,28 @@ public class LocationDataActivity extends AppCompatActivity {
                                     String formatted = format.format(date);
                                     String ft = formatTime.format(date);
                                     System.out.println(formatted);
-                                   // tvTimeStamp.setText("Date : "+ formatted + "  "+"Time :"+ ft);
+                                    // tvTimeStamp.setText("Date : "+ formatted + "  "+"Time :"+ ft);
                                     Date date1 = new Date(Dur * 1000L);
-                                   // DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                                    // DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                                     DateFormat formatTime1 = new SimpleDateFormat(" HH:mm:ss zz");
-                                  //  format1.setTimeZone(TimeZone.getTimeZone("MST"));
-                                   // String formatted1= format1.format(date1);
+                                    //  format1.setTimeZone(TimeZone.getTimeZone("MST"));
+                                    // String formatted1= format1.format(date1);
                                     String Duration = formatTime1.format(date1);
-                                    String durationTime = "Duration Time is :" + String.valueOf(""+Duration);
-                                    String riseTime = String.valueOf("Date : "+ formatted + "  "+"Time :"+ ft);
+                                    String durationTime = "Duration Time is :" + String.valueOf("" + Duration);
+                                    String riseTime = String.valueOf("Date : " + formatted + "  " + "Time :" + ft);
                                     HashMap<String, String> map = new HashMap<>();
                                     map.put("DT", durationTime);
                                     map.put("RT", riseTime);
                                     passDataList.add(map);
-                                    mTotalPassestv.setText("Total Number of Passes :" +Pass);
+                                    mTotalPassestv.setText("Total Number of Passes :" + Pass);
                                 }
                                 passDataList.notifyAll();
 
                             } catch (Exception e) {
                                 Log.e("Ex", e.toString());
-                            } }
-                        ListAdapter adapter = new SimpleAdapter(
+                            }
+                        }
+                        final ListAdapter adapter = new SimpleAdapter(
                                 LocationDataActivity.this, passDataList,
                                 R.layout.row_view, new String[]{"DT", "RT"/*"risetime"*/}, new int[]{R.id.tv_tvDuration,
                                 R.id.tvRiseTime});
@@ -371,6 +398,7 @@ public class LocationDataActivity extends AppCompatActivity {
         // Adding request to request queue
         Appcontroller.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
+
     private void showDialog() {
         if (!pDialog.isShowing())
             pDialog.show();
@@ -380,6 +408,7 @@ public class LocationDataActivity extends AppCompatActivity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+
     private void stopLocationUpdates() {
         if (!mRequestingLocationUpdates) {
             Log.d(TAG, "stopLocationUpdates: updates never requested, no-op.");
@@ -407,17 +436,20 @@ public class LocationDataActivity extends AppCompatActivity {
         }
         updateUI();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
-       stopLocationUpdates();
+        stopLocationUpdates();
     }
+
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         savedInstanceState.putString(KEY_LAST_UPDATED_TIME_STRING, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
     }
+
     private void showSnackbar(final int mainTextStringId, final int actionStringId,
                               View.OnClickListener listener) {
         Snackbar.make(
@@ -426,6 +458,7 @@ public class LocationDataActivity extends AppCompatActivity {
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(getString(actionStringId), listener).show();
     }
+
     private boolean checkPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -436,7 +469,7 @@ public class LocationDataActivity extends AppCompatActivity {
         boolean shouldProvideRationale =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION);
-           if (shouldProvideRationale) {
+        if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
             showSnackbar(R.string.permission_rationale,
                     android.R.string.ok, new View.OnClickListener() {
@@ -450,18 +483,19 @@ public class LocationDataActivity extends AppCompatActivity {
                     });
         } else {
             Log.i(TAG, "Requesting permission");
-                    ActivityCompat.requestPermissions(LocationDataActivity.this,
+            ActivityCompat.requestPermissions(LocationDataActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         Log.i(TAG, "onRequestPermissionResult");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
-                   Log.i(TAG, "User interaction was cancelled.");
+                Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (mRequestingLocationUpdates) {
                     Log.i(TAG, "Permission granted, updates requested, starting location updates");
@@ -486,6 +520,4 @@ public class LocationDataActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

@@ -54,14 +54,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker mCurrLocationMarker;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
-    
+
     Double Lat, Long;
     Long TS;
     TextView tvTimeStamp, tvLat, tvLong;
 
-Button btMyPosition, btiss, btCurrentPass;
-LinearLayout llfooter;
-   /* Button btMyPosition, btCurrentpass, btInfo; */
+    Button btMyPosition, btiss, btCurrentPass;
+    LinearLayout llfooter;
+    /* Button btMyPosition, btCurrentpass, btInfo; */
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -70,12 +70,12 @@ LinearLayout llfooter;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         tvTimeStamp = (TextView) findViewById(R.id.txtTime);
-        tvLat = (TextView)findViewById(R.id.txtLat);
+        tvLat = (TextView) findViewById(R.id.txtLat);
         tvLong = (TextView) findViewById(R.id.txtLong);
 
 
-        llfooter = (LinearLayout)findViewById(R.id.llFooter);
-        btMyPosition = (Button)llfooter.findViewById(R.id.btMyLocation);
+        llfooter = (LinearLayout) findViewById(R.id.llFooter);
+        btMyPosition = (Button) llfooter.findViewById(R.id.btMyLocation);
         btMyPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,33 +83,29 @@ LinearLayout llfooter;
                 startActivity(i);
             }
         });
-        btCurrentPass = (Button)llfooter.findViewById(R.id.btCurrentPass);
+        btCurrentPass = (Button) llfooter.findViewById(R.id.btCurrentPass);
         btCurrentPass.setVisibility(View.GONE);
         //
         // btCurrentPass.setOnClickListener(this);
 
 
-
-
         Bundle bundle = getIntent().getExtras();
 
-        if(bundle!= null)
-        {
+        if (bundle != null) {
             Lat = Double.valueOf(bundle.getString("Lat"));
             Long = Double.valueOf(bundle.getString("Long"));
-            TS  = java.lang.Long.valueOf((bundle.getString("TS")));
-            Log.e("@@", String.valueOf(Lat+"***"+Long+"TS :"+TS));
+            TS = java.lang.Long.valueOf((bundle.getString("TS")));
+            Log.e("@@", String.valueOf(Lat + "***" + Long + "TS :" + TS));
         }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-setTimeStamp();
+        setTimeStamp();
 
-tvLat.setText("Latitute:"+Lat.toString());
-tvLong.setText("Longitute: "+Long.toString());
-
+        tvLat.setText("Latitute:" + Lat.toString());
+        tvLong.setText("Longitute: " + Long.toString());
 
 
     }
@@ -122,8 +118,8 @@ tvLong.setText("Longitute: "+Long.toString());
         format.setTimeZone(TimeZone.getTimeZone("MST"));
         String formatted = format.format(date);
         String ft = formatTime.format(date);
-       System.out.println(formatted);
-       tvTimeStamp.setText("Date : "+ formatted + "  "+"Time :"+ ft);
+        System.out.println(formatted);
+        tvTimeStamp.setText("Date : " + formatted + "  " + "Time :" + ft);
     }
 
 
@@ -142,17 +138,14 @@ tvLong.setText("Longitute: "+Long.toString());
 
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        LatLng sydney = new LatLng(Lat, Long);
-
-        //googleMap.addMarker(new MarkerOptions().position(sydney)
-         //       .title("Marker"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng latLng = new LatLng(Lat, Long);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.addMarker(new MarkerOptions()
-                .position(sydney)
+                .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.satellite))
-        .title("Current Position")
+                .title("Current Position")
         );
-mMap.getMaxZoomLevel();
+        mMap.getMaxZoomLevel();
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -166,7 +159,7 @@ mMap.getMaxZoomLevel();
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-
+            mMap.getUiSettings().setCompassEnabled(true);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -187,7 +180,7 @@ mMap.getMaxZoomLevel();
         }
 
         //Place current location marker
-         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -203,7 +196,7 @@ mMap.getMaxZoomLevel();
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
         }
         if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-             return;
+            return;
         }
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -215,10 +208,7 @@ mMap.getMaxZoomLevel();
                         }
                     }
                 });
-        }
-
-
-
+    }
    /* @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
@@ -235,7 +225,7 @@ mMap.getMaxZoomLevel();
     }*/
 
     @Override
-    public void onConnected( Bundle bundle) {
+    public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -245,7 +235,6 @@ mMap.getMaxZoomLevel();
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
         }
-
     }
 
     @Override
@@ -257,8 +246,10 @@ mMap.getMaxZoomLevel();
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public boolean checkLocationPermission(){
+
+    public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -283,7 +274,6 @@ mMap.getMaxZoomLevel();
             return true;
         }
     }
-
 
 
 }
